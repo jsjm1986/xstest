@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI小说创作助手</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- API Key验证层 -->
+    <div id="api-key-modal" class="modal">
+        <div class="modal-content">
+            <h2>欢迎使用AI小说创作助手</h2>
+            <p>请输入您的Deepseek API密钥以继续使用</p>
+            <div class="input-group">
+                <input type="password" id="api-key-input" placeholder="请输入Deepseek API密钥">
+                <p class="error-message" id="api-key-error"></p>
+            </div>
+            <button id="verify-api-key">验证并开始使用</button>
+            <div class="api-key-help">
+                <p>如何获取Deepseek API密钥？</p>
+                <ol>
+                    <li>访问 Deepseek 官网并注册账号</li>
+                    <li>在控制台中创建新的API密钥</li>
+                    <li>复制API密钥并粘贴到上方输入框</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="display: none;">
+        <header>
+            <h1>AI小说创作助手</h1>
+            <p class="subtitle">让AI助你创作精彩故事</p>
+        </header>
+        
+        <main>
+            <div class="control-panel">
+                <div class="basic-info">
+                    <div class="input-group">
+                        <label for="novel-title">小说标题</label>
+                        <input type="text" id="novel-title" placeholder="请输入小说标题">
+                    </div>
+                    <div class="input-group">
+                        <label for="novel-type">小说类型</label>
+                        <select id="novel-type">
+                            <option value="玄幻">玄幻仙侠</option>
+                            <option value="科幻">科幻未来</option>
+                            <option value="言情">现代言情</option>
+                            <option value="悬疑">悬疑推理</option>
+                            <option value="历史">历史军事</option>
+                            <option value="都市">都市生活</option>
+                            <option value="奇幻">奇幻冒险</option>
+                            <option value="武��">武侠江湖</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="story-settings">
+                    <div class="input-group">
+                        <label for="writing-style">写作风格</label>
+                        <select id="writing-style">
+                            <option value="细腻">细腻描写</option>
+                            <option value="简洁">简洁明快</option>
+                            <option value="华丽">华丽辞藻</option>
+                            <option value="幽默">幽默诙谐</option>
+                            <option value="严肃">严肃正经</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="story-tone">故事基调</label>
+                        <select id="story-tone">
+                            <option value="轻松">轻松欢快</option>
+                            <option value="紧张">紧张刺激</option>
+                            <option value="温馨">温馨感人</option>
+                            <option value="黑暗">黑暗深沉</option>
+                            <option value="正能量">正能量向上</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="novel-outline">故事大纲</label>
+                    <textarea id="novel-outline" placeholder="请描述故事大纲、主要人物设定和关键情节"></textarea>
+                </div>
+
+                <div class="advanced-settings">
+                    <div class="setting-group">
+                        <label>小说整体设置</label>
+                        <div class="setting-controls">
+                            <div class="setting-item">
+                                <label for="total-chapters">预计章节数</label>
+                                <select id="total-chapters">
+                                    <option value="10">10章</option>
+                                    <option value="20" selected>20章</option>
+                                    <option value="30">30章</option>
+                                    <option value="50">50章</option>
+                                    <option value="100">100章</option>
+                                    <option value="custom">自定义</option>
+                                </select>
+                                <input type="number" id="custom-chapters" class="custom-input" min="1" max="200" placeholder="自定义章节数" style="display: none;">
+                            </div>
+                            <div class="setting-item">
+                                <label for="total-words">预计总字数</label>
+                                <select id="total-words">
+                                    <option value="20000">2万字</option>
+                                    <option value="50000" selected>5万字</option>
+                                    <option value="100000">10万字</option>
+                                    <option value="200000">20万字</option>
+                                    <option value="500000">50万字</option>
+                                    <option value="custom">自定义</option>
+                                </select>
+                                <input type="number" id="custom-words" class="custom-input" min="1000" step="1000" placeholder="自定义字数" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>章节生成设置</label>
+                        <div class="setting-controls">
+                            <div class="setting-item">
+                                <label for="chapter-length">单章字数</label>
+                                <select id="chapter-length">
+                                    <option value="1000">1000字</option>
+                                    <option value="2000" selected>2000字</option>
+                                    <option value="3000">3000字</option>
+                                    <option value="4000">4000字</option>
+                                    <option value="5000">5000字</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label for="creativity-level">创意程度</label>
+                                <input type="range" id="creativity-level" min="0" max="100" value="80">
+                                <span class="range-value">80</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>进度概览</label>
+                        <div class="progress-overview">
+                            <div class="progress-info">
+                                <span class="progress-label">已完成章节</span>
+                                <span class="progress-value" id="completed-chapters">0/20</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill chapters" style="width: 0%"></div>
+                                </div>
+                                <span class="remaining-time" id="remaining-time">计算中...</span>
+                            </div>
+                            <div class="progress-info">
+                                <span class="progress-label">已完成字数</span>
+                                <span class="progress-value" id="completed-words">0/50000</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill words" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- 添加状态图例 -->
+                            <div class="status-legend">
+                                <div class="status-item">
+                                    <span class="status-dot" style="background-color: #808080"></span>
+                                    <span>待生成</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-dot" style="background-color: #3498db"></span>
+                                    <span>生成中</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-dot" style="background-color: #2ecc71"></span>
+                                    <span>已完成</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-dot" style="background-color: #e74c3c"></span>
+                                    <span>失败</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 添加章节状态指示器 -->
+                            <div class="chapter-status-list" id="chapter-status-list">
+                                <!-- 这里的内容会通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generation-controls">
+                    <button id="generate-btn" class="primary-btn">开始创作</button>
+                    <button id="save-outline-btn" class="secondary-btn">保存大纲</button>
+                </div>
+            </div>
+            
+            <div class="output-panel">
+                <div class="output-controls">
+                    <div class="chapter-info">
+                        <span id="chapter-number">第1章</span>
+                        <input type="text" id="chapter-title" placeholder="章节标题">
+                    </div>
+                    <div class="view-controls">
+                        <button id="toggle-outline-btn" class="icon-btn" title="显示/隐藏大纲">
+                            <span class="icon">📋</span>
+                        </button>
+                        <button id="toggle-fullscreen-btn" class="icon-btn" title="全屏模式">
+                            <span class="icon">⛶</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <span>正在生成...</span>
+                </div>
+
+                <div class="progress-text"></div>
+
+                <div class="generation-results"></div>
+
+                <div class="novel-content">
+                    <div id="novel-output"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <div class="left-buttons">
+                        <button id="undo-btn" class="icon-btn" title="撤销">↩</button>
+                        <button id="redo-btn" class="icon-btn" title="重做">↪</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button id="edit-btn">编辑内容</button>
+                        <button id="save-btn">保存小说</button>
+                        <button id="continue-btn">继续生成</button>
+                        <button id="change-key-btn">更换密钥</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="generation-history">
+                <h3>生成历史</h3>
+                <div id="history-list"></div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2024 AI小说创作助手 - 让创作更简单</p>
+            <div class="footer-links">
+                <a href="#" id="help-link">使用帮助</a>
+                <a href="#" id="feedback-link">问题反馈</a>
+                <a href="#" id="about-link">关于我们</a>
+            </div>
+        </footer>
+    </div>
+    
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/api.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html> 
